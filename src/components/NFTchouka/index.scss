@@ -1,0 +1,135 @@
+.chouka-page {
+    padding: 10px;
+
+    .chouka-nav-box {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        .chouka-nav {
+            width: 45%;
+            text-align: center;
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #FFFFFF;
+            border-radius: 4px;
+            background: #6e6e6e;
+            transition: all .15s ease-in-out;
+        }
+
+        .chouka-nav-select {
+            color: #ffeda8;
+            background: #01c0b6;
+        }
+    }
+
+    .chouka-main {
+        margin-top: 40px;
+        padding: 0 40px;
+
+        .chouka-bg {
+            height: 485px;
+            background: #535353;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .main-img {
+                width: 220px;
+                height: 220px;
+                margin-bottom: 30px;
+                background: chocolate;
+            }
+
+            .main-btn {
+                height: 40px;
+                width: 50%;
+                line-height: 40px;
+                font-size: 14px;
+                color: #ffeda8;
+                background: #01c0b6;
+                font-weight: bold;
+                text-align: center;
+                border-radius: 4px;
+            }
+        }
+    }
+
+    .chouka-mask {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        .mask-title {
+            margin: 0;
+        }
+
+        .up-waring {
+            font-size: 14px;
+            font-weight: bold;
+        }
+    }
+
+    .card-box {
+        // margin-top: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        z-index: 10;
+        width: 100%;
+        height: 100%;
+        .container,
+        .front,
+        .flip,
+        .back {
+            width: 250px;
+            height: 400px;
+        }
+        .flip {
+            position: relative;
+        }
+        .front,
+        .back {
+            border-radius: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .fornt {
+            z-index:2;
+        }
+        .back {
+            transform: rotateY(180deg);
+        }
+        .flip {
+            animation: turn 1s ease-in-out infinite;
+        }
+        .container {
+            animation: scal 5s 1;
+        }
+    }
+}
+
+@keyframes turn {
+    0% {
+        transform: rotateY(0deg);
+    }
+    100% {
+        transform: rotateY(360deg);
+    }
+}
+
+@keyframes scal {
+    0% {
+        transform: perspective(1000px) scale(0.1, 0.1) translateY(-1500px) translateZ(-1000px);
+    }
+    100% {
+        transform: perspective(1000px) scale(1, 1) translateY(0px) translateZ(0px);
+    }
+}
