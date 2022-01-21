@@ -81,6 +81,7 @@ export default class index extends Component {
 		} else {
 			//已到底部
 			console.log(123123)
+            this.getData()
 		}
 	};
 	render() {

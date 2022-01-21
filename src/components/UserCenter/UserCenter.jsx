@@ -54,6 +54,13 @@ class UserCenter extends Component {
                     link: "/default/me-xh",
                 },
                 {
+                    icon: grsl,
+                    name: "质押",
+                    rightNum: 0,
+                    rightIsNum: false,
+                    link: "/default/zhiya",
+                },
+                {
                     icon: wdsq,
                     name: "我的社区",
                     rightNum: 8989.0,

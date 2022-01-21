@@ -13,9 +13,9 @@ let url;
 
 url= "http://hos.pulianhong.com/api";
 // 开发环境
-if (process.env.NODE_ENV === 'development') {
-    url = 'http://localhost:3000/api';
-}
+// if (process.env.NODE_ENV === 'development') {
+//     url = 'http://localhost:3000/api';
+// }
 axios.defaults.baseURL = url
 //一些配置，发起请求和响应可以打印出来查看
 axios.interceptors.request.use((config)=>{

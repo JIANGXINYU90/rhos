@@ -15,8 +15,16 @@ import MeXH from "@/components/MeSuanli/MeXH.jsx";
 import NFTpage from "@/components/NFT/index.jsx";
 import NFTchouka from "@/components/NFTchouka/index.jsx"
 import CardList from "@/components/CardList";
+import CardDetail from "@/components/CardDetail";
+import NFTgame from "@/components/NFTgame"
+import NFTwallet from "@/components/NFTwallet"
+import Crystal from "@/components/NFTwallet/crystal"
+import HeroPK from "@/components/HeroPK";
+import HeroPKNew from "@/components/HeroPKnew";
+import Zhiya from "@/components/Zhiya"
 
 import http from "@/config/axios/index.js"
+
 
 
 
@@ -29,11 +37,11 @@ class Myteam extends Component {
             bdBoxShow: false,
             userAddress:'',
             topName: '',
-            
 		};
         // this.history = creatHistory();
 	}
     // componentDidMount(){
+        
         // this.props.history.listen(route => {
         //     console.log(route)
         // })
@@ -137,6 +145,25 @@ class Myteam extends Component {
         if(type === 'default/nft/cardlist') {
             return '我的卡包'
         }
+        if(type === 'default/nft/carddetail') {
+            return '人物详情'
+        }
+        if(type === 'default/nft/game') {
+            return 'PVE'
+        }
+        if(type === 'default/nft/nftwallet') {
+            return 'HOS'
+        }
+        if(type === 'default/nft/crystal') {
+            return '水晶'
+        }
+        if(type === 'default/nft/hero_pk') {
+            return '战斗'
+        }
+        
+        if(type === 'default/zhiya') {
+            return '质押'
+        }
     }
     back() {
         console.log("点击了返回按钮")
@@ -144,14 +171,22 @@ class Myteam extends Component {
         this.props.history.goBack()
     }
      // 关闭绑定上级弹窗
-     hideUpBox = () => {
+    hideUpBox = () => {
         this.setState({bdBoxShow: false})
     }
+    noneOrFlex = () => {
+        const type = this.props.location.pathname.replace('/', '') || 'top'
+        if(type === 'default/nft/hero_pk_new') {
+            return 'none'
+        } else {
+            return 'flex'
+        }
+    }
 	render() {
-        console.log(123123)
+        
 		return (
             <>  
-                <NavBar onBack={() => {this.back()}}>{this.setTitleText()}</NavBar>
+                <NavBar onBack={() => {this.back()}} style={{display: `${this.noneOrFlex()}`}}>{this.setTitleText()}</NavBar>
                 <Router history={this.props.history}>
                     <Switch>
                         <Route path="/default/team" exact component={MyTeam}></Route>
@@ -163,6 +198,13 @@ class Myteam extends Component {
                         <Route path="/default/nft" exact component={NFTpage}></Route>
                         <Route path="/default/nft/chouka" exact component={NFTchouka}></Route>
                         <Route path="/default/nft/cardlist" exact component={CardList}></Route>
+                        <Route path="/default/nft/carddetail" exact component={CardDetail}></Route>
+                        <Route path="/default/nft/game" exact component={NFTgame}></Route>
+                        <Route path="/default/nft/nftwallet" exact component={NFTwallet}></Route>
+                        <Route path="/default/nft/crystal" exact component={Crystal}></Route>
+                        <Route path="/default/nft/hero_pk" exact component={HeroPK}></Route>
+                        <Route path="/default/nft/hero_pk_new" exact component={HeroPKNew}></Route>
+                        <Route path="/default/zhiya" exact component={Zhiya}></Route>
                     </Switch>
                 </Router>
                 

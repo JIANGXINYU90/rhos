@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
+// import { Link } from "react-router-dom";
+// import PropTypes from "prop-types";
 import { Swiper, Toast, NoticeBar } from "antd-mobile";
 import http from "@/config/axios/index.js";
 import "./index.scss";
 
 import noticImg from "@/static/image/home/notic.png";
 import moreImg from "@/static/image/icon/right.png";
-import asstesBg from "@/static/image/home/home-center-bg.png";
+// import asstesBg from "@/static/image/home/home-center-bg.png";
 
 class Banner extends Component {
 	constructor(props) {
@@ -18,12 +18,12 @@ class Banner extends Component {
 	}
 	// 对传入的参数进行格式验证
 
-	static propTypes = {
-		getStaticNum: PropTypes.func.isRequired,
-		staticNum: PropTypes.any.isRequired,
-		ylqStatic: PropTypes.any.isRequired,
-		ylqDynamic: PropTypes.any.isRequired,
-	};
+	// static propTypes = {
+	// 	getStaticNum: PropTypes.func.isRequired,
+	// 	staticNum: PropTypes.any.isRequired,
+	// 	ylqStatic: PropTypes.any.isRequired,
+	// 	ylqDynamic: PropTypes.any.isRequired,
+	// };
 
 	componentDidMount() {
 		this.getBanner();
@@ -44,28 +44,28 @@ class Banner extends Component {
 	}
 
 	// 通知父组件领取静态奖励
-	upComponentGetStatic = () => {
-		if (this.props.staticNum > 0) {
-			this.props.getStaticNum();
-		}
-	};
+	// upComponentGetStatic = () => {
+	// 	if (this.props.staticNum > 0) {
+	// 		this.props.getStaticNum();
+	// 	}
+	// };
 
     // 通知父组件领取销毁合约静态奖励
-    upComponentGetXHstatic = () => {
-        if (this.props.xhStatic > 0) {
-			this.props.getXHstaticNum();
-		}
-    }
+    // upComponentGetXHstatic = () => {
+    //     if (this.props.xhStatic > 0) {
+	// 		this.props.getXHstaticNum();
+	// 	}
+    // }
 
 	// 获取hos的usdt价格
-	getUSDT = (num) => {
-		if (Number(num) === 0) {
-			return 0;
-		}
-		let num1 = window.web3.utils.toWei(num.toString(), "gwei");
-		let usdt = (num1 * this.props.hosToHusd).toString().split(".")[0];
-		return window.web3.utils.fromWei(usdt, "gwei");
-	};
+	// getUSDT = (num) => {
+	// 	if (Number(num) === 0) {
+	// 		return 0;
+	// 	}
+	// 	let num1 = window.web3.utils.toWei(num.toString(), "gwei");
+	// 	let usdt = (num1 * this.props.hosToHusd).toString().split(".")[0];
+	// 	return window.web3.utils.fromWei(usdt, "gwei");
+	// };
 	render() {
 		return (
 			<>
@@ -99,7 +99,7 @@ class Banner extends Component {
 						<img src={moreImg} alt="" />
 					</div>
 				</div>
-				<div style={{ backgroundImage: `url(${asstesBg})` }} className="assets">
+				{/* <div style={{ backgroundImage: `url(${asstesBg})` }} className="assets">
 					<div className="assets-top">
 						<div className="top-text">资产</div>
 						<Link to="/default/addetsdetail" className="top-text nav-link">
@@ -179,7 +179,7 @@ class Banner extends Component {
 							</div>
 						</>
 					)}
-				</div>
+				</div> */}
 			</>
 		);
 	}

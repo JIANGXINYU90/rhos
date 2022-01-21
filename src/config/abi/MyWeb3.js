@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-04 11:44:48
- * @LastEditTime: 2021-12-15 17:29:01
+ * @LastEditTime: 2022-01-20 09:16:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /授权/auth_app/src/abi/MyWeb3.js
@@ -11,9 +11,14 @@ import Web3 from "web3";
 import zyabi from "./zhiya.abi.json"
 // LP合约ABI.json
 import lpabi from "./lp.abi.json"
+// nft抽卡ABI.json
+import ckabi from "./nftChouKa.abi.json"
+// 水晶abi
+import sjabi from "./shuijing.abi.json"
 // 合约地址(质押、LP)
 import contractAddress from './contractAddress'
 import { Toast, Dialog } from "antd-mobile";
+
 
 const MyWeb3 = {
     init() {
@@ -37,7 +42,7 @@ const MyWeb3 = {
                         //设置最大监听器数量，否则出现warning
                         window.web3.currentProvider.setMaxListeners(300)
                         //从json获取到当前网络id下的合约地址, currentChainId: 56是币安正式链， 97是币安测试链
-
+                        console.log("----------ID:",currentChainId)
                         if (currentChainId === 97) {
                             // 实例化质押合约
                             window.zyContract = new window.web3.eth.Contract(zyabi.abi, contractAddress.zyContractAddress)
@@ -45,8 +50,15 @@ const MyWeb3 = {
                             // window.lpContract = new window.web3.eth.Contract(lpabi.abi, contractAddress.lpContractAddress)
                             // 实例化HOS合约
                             window.hosContract = new window.web3.eth.Contract(lpabi.abi, contractAddress.hosContractAddress)
+                            // 实例化nft抽卡合约
+                            window.nftChoukaContract = new window.web3.eth.Contract(ckabi.abi, contractAddress.nftContractAddress)
+                            // nftChoukaContract = new window.web3.eth.Contract(ckabi.abi, contractAddress.nftContractAddress)
+                            // 实例化  领水晶收gas费的合约
+                            // window.nftSjContract = new window.web3.eth.Contract(zyabi.abi, contractAddress.nftSJAddress)
                             //获取到当前(使用者)默认的以太坊地址
                             window.defaultAccount = accounts[0].toLowerCase()
+                            // 监听事件
+                            // this.listenerNewPlayer()
                             // 监听网络切换和账户切换
                             this.allEvents(ethereum)
                             resolve(true)
@@ -133,16 +145,25 @@ const MyWeb3 = {
                 })
         })
     },
-    // 在HOS合约中授权质押合约使用HOS
-    authZYuseHOS(userAddress) {
+    // 在HOS合约中授权
+    authZYuseHOS(userAddress, type = 1) {
         Toast.show({
             icon: 'loading',
             maskClickable: false,
             duration: 0
         })
+        let useContractAddress;
+        // 质押合约使用HOS
+        if (type === 1) {
+            useContractAddress = contractAddress.zyContractAddress
+        }
+        // NFT抽卡合约使用HOS
+        if (type === 2) {
+            useContractAddress = contractAddress.nftContractAddress
+        }
         return new Promise((resolve, reject) => {
-            window.hosContract.methods.approve(contractAddress.zyContractAddress, "9999999999999999999")
-                .send({from: userAddress})
+            window.hosContract.methods.approve(useContractAddress, "9999999999999999999")
+                .send({ from: userAddress })
                 .on('receipt', (receipt) => {
                     Toast.show({
                         icon: 'success',
@@ -158,6 +179,32 @@ const MyWeb3 = {
                     })
                     console.log({ error: error, receipt: receipt })
                     reject({ error: error, receipt: receipt })
+                })
+        })
+    },
+    // NFT充值
+    transfer(userAddress, nftAddress, num) {
+        Toast.show({
+            icon: 'loading',
+            maskClickable: false,
+            duration: 0
+        })
+        let numToWei = window.web3.utils.toWei(num.toString(), "gwei");
+        console.log(userAddress)
+        return new Promise((resolve, reject) => {
+            window.hosContract.methods.transfer(nftAddress, numToWei)
+                .send({ from: userAddress })
+                .on('receipt', (receipt) => {
+                    // 交易收据
+                    resolve(receipt)
+                })
+                .on('error', (error) => {
+                    Toast.show({
+                        icon: 'fail',
+                        content: '充值失败'
+                    })
+                    console.log({ error: error })
+                    reject({ error: error })
                 })
         })
     },
@@ -322,6 +369,126 @@ const MyWeb3 = {
                 })
         })
     },
+    // 获取用户当前可用的水晶数量
+    getUserSJNum(userAddress) {
+        // 实例化  领水晶收gas费的合约
+        const nftSjContract = new window.web3.eth.Contract(sjabi.abi, contractAddress.nftSJAddress)
+        return new Promise((resolve, reject) => {
+            nftSjContract.methods.balanceOf(userAddress, 1001)
+                .call()
+                .then((res) => {
+                    resolve(res)
+                })
+        })
+    },
+    // // 领水晶前发送GAS费
+    // sendSjGas(userAddress) {
+    //     Toast.show({
+    //         icon: 'loading',
+    //         maskClickable: false,
+    //         duration: 0
+    //     })
+    //     return new Promise((resolve, reject) => {
+    //         // GAS 费用
+    //         const gas = window.web3.utils.toWei(0.0003.toString());
+    //         console.log(gas)
+    //         // 创建随机数，创建订单编号
+    //         const data_time = new Date().getTime();
+    //         const random_1 = parseInt(Math.random() * Math.random() * 100) + '';
+    //         const random_2 = parseInt(Math.random() * Math.random() * 100) + '';
+    //         const orderNo = data_time + random_1 + random_2;
+    //         window.nftSjContract.methods.extraGas(orderNo)
+    //             .send(
+    //                 {
+    //                     from: userAddress,
+    //                     value: gas
+    //                 }
+    //             )
+    //             .on('receipt', (receipt) => {
+    //                 // 交易收据
+    //                 resolve(receipt)
+    //             })
+    //             .on('error', (error, receipt) => {
+    //                 Toast.show({
+    //                     icon: 'fail',
+    //                     content: '发送失败'
+    //                 })
+    //                 console.log({ error: error, receipt: receipt })
+    //                 reject({ error: error, receipt: receipt })
+    //             })
+    //     })
+    // },
+    // nft抽卡发送 100 HOS和 0.005 BNB
+    sendFeiForNFT(userAddress, orderNo) {
+        Toast.show({
+            icon: 'loading',
+            maskClickable: false,
+            duration: 0
+        })
+        return new Promise((resolve, reject) => {
+            // BNB 费用
+            const gas = window.web3.utils.toWei(0.005.toString());
+            console.log(gas)
+            // 创建随机数，创建订单编号
+            // const data_time = new Date().getTime();
+            // const random_1 = parseInt(Math.random() * Math.random() * 100) + '';
+            // const random_2 = parseInt(Math.random() * Math.random() * 100) + '';
+            // const orderNo = data_time + random_1 + random_2;
+            window.nftChoukaContract.methods.newNfOrder(orderNo)
+                .send(
+                    {
+                        from: userAddress,
+                        value: gas
+                    }
+                )
+                .on('receipt', (receipt) => {
+                    // 交易收据
+                    resolve(receipt)
+                })
+                .on('error', (error, receipt) => {
+                    Toast.show({
+                        icon: 'fail',
+                        content: '发送失败'
+                    })
+                    console.log({ error: error, receipt: receipt })
+                    reject({ error: error, receipt: receipt })
+                })
+        })
+    },
+    // 监听newplayer事件
+    listenerNewPlayer() {
+        return new Promise((resolve, reject) => {
+            window.nftChoukaContract.events.CreateNf({},function(err,res){
+                resolve(res)
+            })
+        })
+    },
+    // 抽卡
+    creatNFT(userAddress, orderID) {
+        return new Promise((resolve, reject) => {
+            // 创建随机数，创建订单编号
+            const data_time = new Date().getTime();
+            const random_1 = parseInt(Math.random() * Math.random() * 100) + '';
+            const random_2 = parseInt(Math.random() * Math.random() * 100) + '';
+            const randomNum = data_time + random_1 + random_2;
+            window.nftChoukaContract.methods.createNf(userAddress, orderID, randomNum)
+                .send({ from: userAddress })
+                .on('receipt', (receipt) => {
+                    Toast.clear()
+                    // 交易收据
+                    resolve(receipt)
+                })
+                .on('error', (error, receipt) => {
+                    Toast.show({
+                        icon: 'fail',
+                        content: '抽卡失败'
+                    })
+                    console.log({ error: error, receipt: receipt })
+                    reject({ error: error, receipt: receipt })
+                })
+        })
+
+    },
     // 解压
     jieya(userAddress, jieyaNum, lpContractAddress) {
         Toast.show({
@@ -361,7 +528,7 @@ const MyWeb3 = {
                     // 清理所有缓存
                     localStorage.clear();
                     // window.location.reload()
-                    window.location.href=window.location.origin
+                    window.location.href = window.location.origin
                 })
                 // 监听切换网络 ID
                 .on("chainChanged", function (networkVersion) {
@@ -369,7 +536,7 @@ const MyWeb3 = {
                     // 清理所有缓存
                     localStorage.clear();
                     // window.location.reload()
-                    window.location.href=window.location.origin
+                    window.location.href = window.location.origin
                 });
         } catch (err) {
             console.log(err)
