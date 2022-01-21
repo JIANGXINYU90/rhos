@@ -258,6 +258,7 @@ class HeroPKNew extends Component {
 		}
 		heroGifStatic = monsterGif;
 		heroGifAttack = monsterPKGif;
+        attackGif = fire;
 		// {/* 站立图片 */}
 		if (this.state.pkStatusType === "wating") {
 			return (

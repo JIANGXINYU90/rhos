@@ -306,6 +306,14 @@ export default class Crystal extends Component {
 						) : (
 							<></>
 						)}
+                        {item.from_uid && item.from_uid !== '无' ? (
+							<div className="wallet-item-line">
+                                <span>来源</span>
+                                <span>{item.from_uid}</span>
+                            </div>
+						) : (
+							<></>
+						)}
 					</div>
 				);
 			});
